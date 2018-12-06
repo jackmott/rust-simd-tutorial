@@ -44,6 +44,14 @@ fn scale_entities_soa_simd(entities: &mut Entities)  {
     entities.pos.simd_mul(2.0);    
 }
 
+fn normalize_velocity_soa(entities: &mut Entities) {
+    entities.pos.norm();
+}
+
+fn normalize_velocity_soa_simd(entities: &mut Entities) {
+    entities.pos.simd_norm();
+}
+
 
 
 fn benchmark(c: &mut Criterion) {
@@ -59,6 +67,12 @@ fn benchmark(c: &mut Criterion) {
 
     let mut entities = prepare_entities_soa();
     c.bench_function("soa + simd scale", move |b| b.iter(|| scale_entities_soa_simd(&mut entities)));
+
+    let mut entities = prepare_entities_soa();
+    c.bench_function("soa norm", move |b| b.iter(|| normalize_velocity_soa(&mut entities)));
+
+    let mut entities = prepare_entities_soa();
+    c.bench_function("soa + simd norm", move |b| b.iter(|| normalize_velocity_soa_simd(&mut entities)));
     
 }
 
