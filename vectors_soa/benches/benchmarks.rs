@@ -15,7 +15,7 @@ fn prepare_entities_soa() -> Entities {
     let mut rng = rand::thread_rng();    
     let pos = Vectors3 { x: Vec::new(), y: Vec::new(), z: Vec::new() };
     let v = Vectors3 { x: Vec::new(), y: Vec::new(), z: Vec::new() };
-    let mut e = Entities { name: Vec::new(), pos, v};
+    let mut e = Entities { name: Vec::new(), pos, v, mass: Vec::new(), elasticity: Vec::new(),strength: Vec::new()};
     for _ in 0 .. TEST_SIZE {     
         e.name.push("test".to_string());
         e.pos.x.push(rng.gen::<f32>());
@@ -32,17 +32,11 @@ fn move_entities_soa(entities: &mut Entities)  {
     entities.pos.add(&entities.v);    
 }
 
-fn scale_entities_soa(entities: &mut Entities)  {
-    entities.pos.mul(2.0);    
-}
 
 fn move_entities_soa_simd(entities: &mut Entities)  {
     entities.pos.simd_add(&entities.v);    
 }
 
-fn scale_entities_soa_simd(entities: &mut Entities)  {
-    entities.pos.simd_mul(2.0);    
-}
 
 fn normalize_velocity_soa(entities: &mut Entities) {
     entities.pos.norm();
@@ -62,11 +56,6 @@ fn benchmark(c: &mut Criterion) {
     let mut entities = prepare_entities_soa();
     c.bench_function("soa + simd move", move |b| b.iter(|| move_entities_soa_simd(&mut entities)));
 
-    let mut entities = prepare_entities_soa();
-    c.bench_function("soa scale", move |b| b.iter(|| scale_entities_soa(&mut entities)));
-
-    let mut entities = prepare_entities_soa();
-    c.bench_function("soa + simd scale", move |b| b.iter(|| scale_entities_soa_simd(&mut entities)));
 
     let mut entities = prepare_entities_soa();
     c.bench_function("soa norm", move |b| b.iter(|| normalize_velocity_soa(&mut entities)));
