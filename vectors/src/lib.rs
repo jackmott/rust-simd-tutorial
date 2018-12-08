@@ -1,14 +1,11 @@
 use std::arch::x86_64::*;
 
-
-#[derive(Debug)]
 pub struct Vector3 {
     pub x : f32,
     pub y: f32,
     pub z: f32
 }
 
-#[derive(Debug)]
 pub struct Entity {
     pub name: String,
     pub pos:Vector3,
@@ -29,10 +26,10 @@ pub trait Vector {
 
 impl Vector for Vector3 {
 
-    fn add(&mut self, b:&Vector3)  {        
-        self.x = self.x + b.x;
-        self.y = self.y + b.y;
-        self.z = self.z + b.z;        
+    fn add(&mut self, v:&Vector3)  {        
+        self.x = self.x + v.x;
+        self.y = self.y + v.y;
+        self.z = self.z + v.z;        
     }
 
    
@@ -45,11 +42,11 @@ impl Vector for Vector3 {
     }
     
     
-    fn simd_add(&mut self, b:&Vector3)  {
-       
+    fn simd_add(&mut self, v:&Vector3)  {              
     }
      
     fn simd_norm(&mut self) {
+
        
     }
 }

@@ -50,12 +50,13 @@ fn normalize_velocity_soa_simd(entities: &mut Entities) {
 
 fn benchmark(c: &mut Criterion) {
   
+  /*
     let mut entities = prepare_entities_soa();
     c.bench_function("soa move", move |b| b.iter(|| move_entities_soa(&mut entities)));
 
     let mut entities = prepare_entities_soa();
     c.bench_function("soa + simd move", move |b| b.iter(|| move_entities_soa_simd(&mut entities)));
-
+*/
 
     let mut entities = prepare_entities_soa();
     c.bench_function("soa norm", move |b| b.iter(|| normalize_velocity_soa(&mut entities)));
