@@ -30,7 +30,7 @@ fn move_entities(entities: &mut Vec<Entity>) {
 
 fn move_entities_simd(entities: &mut Vec<Entity>) {
     for e in entities.iter_mut() {
-       e.pos.simd_add(&e.v);
+       unsafe { e.pos.simd_add(&e.v) };
     }
 }
 
