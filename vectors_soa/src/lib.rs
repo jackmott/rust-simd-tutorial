@@ -36,37 +36,16 @@ impl Vector for Vectors3 {
         for i in 0..self.x.len() {
             let mut len =
                 (self.x[i] * self.x[i] + self.y[i] * self.y[i] + self.z[i] * self.z[i]).sqrt();
-                self.x[i] *= len * 0.5;
-                self.y[i] *= len * 0.5;
-                self.z[i] *= len * 0.5;
+            self.x[i] *= len * 0.5;
+            self.y[i] *= len * 0.5;
+            self.z[i] *= len * 0.5;
         }
     }
 
-    unsafe fn simd_add(&mut self, v: &Vectors3) {
-        for i in (0..self.x.len()).step_by(4) {
-            let ax = _mm_loadu_ps(self.x.get_unchecked(i));
-            let bx = _mm_loadu_ps(v.x.get_unchecked(i));
+    unsafe fn simd_add(&mut self, v: &Vectors3) {}
 
-            let ay = _mm_loadu_ps(self.y.get_unchecked(i));
-            let by = _mm_loadu_ps(v.y.get_unchecked(i));
-
-            let az = _mm_loadu_ps(self.z.get_unchecked(i));
-            let bz = _mm_loadu_ps(v.z.get_unchecked(i));
-            
-            _mm_storeu_ps(self.x.get_unchecked_mut(i),_mm_add_ps(ax,bx));
-            _mm_storeu_ps(self.y.get_unchecked_mut(i),_mm_add_ps(ay,by));
-            _mm_storeu_ps(self.z.get_unchecked_mut(i),_mm_add_ps(az,bz));
-    
-        }
-      
-    }
-
-    unsafe fn simd_norm(&mut self) {
-      for i in (0..self.x.len())
-    }
+    unsafe fn simd_norm(&mut self) {}
 
     //#[target_feature(enable = "avx2")]
-    unsafe fn simd_norm_avx(&mut self) {
-
-    }
+    unsafe fn simd_norm_avx(&mut self) {}
 }
