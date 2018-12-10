@@ -19,20 +19,18 @@ pub struct Entity {
 pub trait Vector {
     fn add(&mut self, b: &Self);        
     fn norm(&mut self);
-    fn simd_add(&mut self, b : &Self);    
-    fn simd_norm(&mut self);
+    unsafe fn simd_add(&mut self, b : &Self);    
+    unsafe fn simd_norm(&mut self);
 }
 
 
 impl Vector for Vector3 {
 
     fn add(&mut self, v:&Vector3)  {        
-        self.x = self.x + v.x;
-        self.y = self.y + v.y;
-        self.z = self.z + v.z;        
+        self.x += v.x;
+        self.y += v.y;
+        self.z += v.z;        
     }
-
-   
 
     fn norm(&mut self) {
         let len = (self.x*self.x+self.y*self.y+self.z*self.z).sqrt();
@@ -40,14 +38,19 @@ impl Vector for Vector3 {
         self.y /= len;
         self.z /= len;
     }
-    
-    
-    fn simd_add(&mut self, v:&Vector3)  {              
+        
+    unsafe fn simd_add(&mut self, v:&Vector3)  {    
+        let a = _mm_set_ps(self.x,self.y,self.z,0.0);
+        let b = _mm_set_ps(v.x,v.y,v.z,0.0);
+        let sum = _mm_add_ps(a,b,);
+        let sum_array = std::mem::transmute::<__m128,[f32;4]>(sum);     
+        self.x = sum_array[3];
+        self.y = sum_array[2];
+        self.z = sum_array[1];
     }
      
-    fn simd_norm(&mut self) {
-
-       
+    unsafe fn simd_norm(&mut self) {
+      
     }
 }
 
