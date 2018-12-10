@@ -41,60 +41,79 @@ fn prepare_entities_soa() -> Entities {
     e
 }
 
-fn move_entities_soa(entities: &mut Entities) {
+fn move_entities(entities: &mut Entities) {
     entities.pos.add(&entities.v);
 }
 
-fn move_entities_soa_simd(entities: &mut Entities) {
+fn sse_move_entities(entities: &mut Entities) {
     unsafe {
-        entities.pos.simd_add(&entities.v);
+        entities.pos.sse_add(&entities.v);
     }
 }
 
-fn normalize_velocity_soa(entities: &mut Entities) {
-    entities.pos.norm();
+fn norm(entities: &mut Entities) {
+    entities.v.norm();
 }
 
-fn normalize_velocity_soa_sse(entities: &mut Entities) {
+fn sse_norm(entities: &mut Entities) {
     unsafe {
-        entities.pos.simd_norm();
+        entities.v.sse_norm();
     }
 }
 
-fn normalize_velocity_soa_avx(entities: &mut Entities) {
+fn clamp(entities: &mut Entities) {
+    entities.v.clamp(0.5);
+}
+
+fn sse_clamp(entities: &mut Entities) {
     unsafe {
-        entities.pos.simd_norm_avx();
+        entities.v.sse_clamp(0.5);
     }
 }
 
-fn normalize_velocity_soa_simd_avx(entities: &mut Entities) {}
+fn avx_clamp(entities: &mut Entities) {
+    unsafe {
+        entities.v.avx_clamp(0.5);
+    }
+}
 
 fn benchmark(c: &mut Criterion) {
     let mut entities = prepare_entities_soa();
-    c.bench_function("soa move", move |b| {
-        b.iter(|| move_entities_soa(&mut entities))
+    c.bench_function("scalar move", move |b| {
+        b.iter(|| move_entities(&mut entities))
     });
+
 /*
     let mut entities = prepare_entities_soa();
-    c.bench_function("soa + simd move", move |b| {
-        b.iter(|| move_entities_soa_simd(&mut entities))
+    c.bench_function("sse move", move |b| {
+        b.iter(|| sse_move_entities(&mut entities))
     });
-    
+  
     let mut entities = prepare_entities_soa();
-    c.bench_function("soa norm", move |b| {
-        b.iter(|| normalize_velocity_soa(&mut entities))
+    c.bench_function("scalar norm", move |b| {
+        b.iter(|| norm(&mut entities))
     });
 
     let mut entities = prepare_entities_soa();
-    c.bench_function("soa + sse norm", move |b| {
-        b.iter(|| normalize_velocity_soa_simd(&mut entities))
+    c.bench_function("sse norm", move |b| {
+        b.iter(|| norm(&mut entities))
     });
 
     let mut entities = prepare_entities_soa();
-    c.bench_function("soa + avx norm", move |b| {
-        b.iter(|| normalize_velocity_soa_avx(&mut entities))
+    c.bench_function("scalar clamp", move |b| {
+        b.iter(|| clamp(&mut entities))
     });
-    */
+
+    let mut entities = prepare_entities_soa();
+    c.bench_function("sse clamp", move |b| {
+        b.iter(|| sse_clamp(&mut entities))
+    });
+
+    let mut entities = prepare_entities_soa();
+    c.bench_function("avx clamp", move |b| {
+        b.iter(|| avx_clamp(&mut entities))
+    });
+  */  
 }
 
 pub fn main() {

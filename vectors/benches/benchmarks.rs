@@ -41,20 +41,20 @@ fn move_entities(entities: &mut Vec<Entity>) {
     }
 }
 
-fn move_entities_simd(entities: &mut Vec<Entity>) {
+fn sse_move_entities(entities: &mut Vec<Entity>) {
     for e in entities.iter_mut() {
-        unsafe { e.pos.simd_add(&e.v) };
+        unsafe { e.pos.sse_add(&e.v) };
     }
 }
 
 fn benchmark(c: &mut Criterion) {
     let mut entities = prepare_entities();
-    c.bench_function("normal move", move |b| {
+    c.bench_function("scalar move", move |b| {
         b.iter(|| move_entities(&mut entities))
     });
     let mut entities = prepare_entities();
-    c.bench_function("simd move", move |b| {
-        b.iter(|| move_entities_simd(&mut entities))
+    c.bench_function("sse move", move |b| {
+        b.iter(|| sse_move_entities(&mut entities))
     });
 }
 

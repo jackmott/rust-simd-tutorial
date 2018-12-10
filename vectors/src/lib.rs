@@ -19,8 +19,8 @@ pub struct Entity {
 pub trait Vector {
     fn add(&mut self, b: &Self);
     fn norm(&mut self);
-    unsafe fn simd_add(&mut self, b: &Self);
-    unsafe fn simd_norm(&mut self);
+    unsafe fn sse_add(&mut self, b: &Self);
+    unsafe fn sse_norm(&mut self);
 }
 
 impl Vector for Vector3 {
@@ -37,7 +37,7 @@ impl Vector for Vector3 {
         self.z /= len;
     }
 
-    unsafe fn simd_add(&mut self, v: &Vector3) {}
+    unsafe fn sse_add(&mut self, v: &Vector3) {}
 
-    unsafe fn simd_norm(&mut self) {}
+    unsafe fn sse_norm(&mut self) {}
 }
