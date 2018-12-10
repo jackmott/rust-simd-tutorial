@@ -3,6 +3,8 @@ name = "rust_intrin"
 version = "0.1.0"
 authors = ["jack mott <jack.mott@gmail.com>"]
 
+[lib]
+bench = false
 
 [dependencies]
 rand = "*"
