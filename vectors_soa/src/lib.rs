@@ -18,11 +18,11 @@ pub struct Entities {
 pub trait Vector {
     fn add(&mut self, b: &Self);
     fn norm(&mut self);
-    fn clamp(&mut self, min:f32);
+    fn clamp(&mut self, min: f32);
     unsafe fn sse_add(&mut self, b: &Self);
     unsafe fn sse_norm(&mut self);
-    unsafe fn sse_clamp(&mut self, min:f32);
-    unsafe fn avx_clamp(&mut self, min:f32);
+    unsafe fn sse_clamp(&mut self, min: f32);
+    unsafe fn avx_clamp(&mut self, min: f32);
 }
 
 impl Vector for Vectors3 {
@@ -33,6 +33,8 @@ impl Vector for Vectors3 {
             self.z[i] += v.z[i];
         }
     }
+
+    unsafe fn sse_add(&mut self, v: &Vectors3) {}
 
     fn norm(&mut self) {
         for i in 0..self.x.len() {
@@ -53,57 +55,61 @@ impl Vector for Vectors3 {
                 self.x[i] /= len;
                 self.y[i] /= len;
                 self.z[i] /= len;
-            } 
+            }
         }
     }
 
-    unsafe fn sse_add(&mut self, v: &Vectors3) {
-        
-    }
-
     unsafe fn sse_norm(&mut self) {
-        for i in (0 .. self.x.len()).step_by(4) {
+        for i in (0..self.x.len()).step_by(4) {
             let ax = _mm_loadu_ps(self.x.get_unchecked(i));
             let ay = _mm_loadu_ps(self.y.get_unchecked(i));
             let az = _mm_loadu_ps(self.z.get_unchecked(i));
 
-            let len =_mm_sqrt_ps(_mm_add_ps(_mm_add_ps(_mm_mul_ps(ax,ax), _mm_mul_ps(ay,ay,)), _mm_mul_ps(az,az)));
-            _mm_storeu_ps(self.x.get_unchecked_mut(i),_mm_div_ps(ax,len));
-            _mm_storeu_ps(self.y.get_unchecked_mut(i),_mm_div_ps(ay,len));
-            _mm_storeu_ps(self.z.get_unchecked_mut(i),_mm_div_ps(az,len));
+            let len = _mm_sqrt_ps(_mm_add_ps(
+                _mm_add_ps(_mm_mul_ps(ax, ax), _mm_mul_ps(ay, ay)),
+                _mm_mul_ps(az, az),
+            ));
+            _mm_storeu_ps(self.x.get_unchecked_mut(i), _mm_div_ps(ax, len));
+            _mm_storeu_ps(self.y.get_unchecked_mut(i), _mm_div_ps(ay, len));
+            _mm_storeu_ps(self.z.get_unchecked_mut(i), _mm_div_ps(az, len));
         }
     }
 
     unsafe fn sse_clamp(&mut self, min: f32) {
-         for i in (0 .. self.x.len()).step_by(4) {
+        for i in (0..self.x.len()).step_by(4) {
             let ax = _mm_loadu_ps(self.x.get_unchecked(i));
             let ay = _mm_loadu_ps(self.y.get_unchecked(i));
             let az = _mm_loadu_ps(self.z.get_unchecked(i));
 
-            let mut len =_mm_rsqrt_ps(_mm_add_ps(_mm_add_ps(_mm_mul_ps(ax,ax), _mm_mul_ps(ay,ay,)), _mm_mul_ps(az,az)));
-        
+            let mut len = _mm_rsqrt_ps(_mm_add_ps(
+                _mm_add_ps(_mm_mul_ps(ax, ax), _mm_mul_ps(ay, ay)),
+                _mm_mul_ps(az, az),
+            ));
+
             //TODO handle condition
 
-            _mm_storeu_ps(self.x.get_unchecked_mut(i),_mm_mul_ps(ax,len));
-            _mm_storeu_ps(self.y.get_unchecked_mut(i),_mm_mul_ps(ay,len));
-            _mm_storeu_ps(self.z.get_unchecked_mut(i),_mm_mul_ps(az,len));
+            _mm_storeu_ps(self.x.get_unchecked_mut(i), _mm_mul_ps(ax, len));
+            _mm_storeu_ps(self.y.get_unchecked_mut(i), _mm_mul_ps(ay, len));
+            _mm_storeu_ps(self.z.get_unchecked_mut(i), _mm_mul_ps(az, len));
         }
     }
 
-    unsafe fn avx_clamp(&mut self, min:f32) {
-         for i in (0 .. self.x.len()).step_by(8) {
+    unsafe fn avx_clamp(&mut self, min: f32) {
+        for i in (0..self.x.len()).step_by(8) {
             let ax = _mm256_loadu_ps(self.x.get_unchecked(i));
             let ay = _mm256_loadu_ps(self.y.get_unchecked(i));
             let az = _mm256_loadu_ps(self.z.get_unchecked(i));
 
-            let mut len =_mm256_rsqrt_ps(_mm256_add_ps(_mm256_add_ps(_mm256_mul_ps(ax,ax), _mm256_mul_ps(ay,ay,)), _mm256_mul_ps(az,az)));
-            
+            let mut len = _mm256_rsqrt_ps(_mm256_add_ps(
+                _mm256_add_ps(_mm256_mul_ps(ax, ax), _mm256_mul_ps(ay, ay)),
+                _mm256_mul_ps(az, az),
+            ));
+
             //TODO handle condition
 
-            _mm256_storeu_ps(self.x.get_unchecked_mut(i),_mm256_mul_ps(ax,len));
-            _mm256_storeu_ps(self.y.get_unchecked_mut(i),_mm256_mul_ps(ay,len));
-            _mm256_storeu_ps(self.z.get_unchecked_mut(i),_mm256_mul_ps(az,len));
+            _mm256_storeu_ps(self.x.get_unchecked_mut(i), _mm256_mul_ps(ax, len));
+            _mm256_storeu_ps(self.y.get_unchecked_mut(i), _mm256_mul_ps(ay, len));
+            _mm256_storeu_ps(self.z.get_unchecked_mut(i), _mm256_mul_ps(az, len));
         }
     }
-
 }
