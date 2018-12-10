@@ -1,4 +1,3 @@
-#[macro_use]
 extern crate criterion;
 extern crate rand;
 extern crate rust_simd_tutorial;
@@ -59,5 +58,11 @@ fn benchmark(c: &mut Criterion) {
     });
 }
 
-criterion_group!(benches, benchmark);
-criterion_main!(benches);
+pub fn main() {
+    let mut c = Criterion::default()
+        .warm_up_time(std::time::Duration::from_millis(100))
+        .measurement_time(std::time::Duration::from_millis(100))
+        .sample_size(5)
+        .without_plots();
+    benchmark(&mut c);
+}
