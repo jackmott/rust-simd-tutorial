@@ -1,4 +1,3 @@
-#[macro_use]
 extern crate criterion;
 extern crate rand;
 extern crate rust_intrin;
