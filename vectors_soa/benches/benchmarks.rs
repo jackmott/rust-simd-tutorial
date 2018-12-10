@@ -55,11 +55,18 @@ fn normalize_velocity_soa(entities: &mut Entities) {
     entities.pos.norm();
 }
 
-fn normalize_velocity_soa_simd(entities: &mut Entities) {
+fn normalize_velocity_soa_sse(entities: &mut Entities) {
     unsafe {
         entities.pos.simd_norm();
     }
 }
+
+fn normalize_velocity_soa_avx(entities: &mut Entities) {
+    unsafe {
+        entities.pos.simd_norm_avx();
+    }
+}
+
 fn normalize_velocity_soa_simd_avx(entities: &mut Entities) {}
 
 fn benchmark(c: &mut Criterion) {
@@ -67,21 +74,27 @@ fn benchmark(c: &mut Criterion) {
     c.bench_function("soa move", move |b| {
         b.iter(|| move_entities_soa(&mut entities))
     });
-
+/*
     let mut entities = prepare_entities_soa();
     c.bench_function("soa + simd move", move |b| {
         b.iter(|| move_entities_soa_simd(&mut entities))
     });
-/*
+    
     let mut entities = prepare_entities_soa();
     c.bench_function("soa norm", move |b| {
         b.iter(|| normalize_velocity_soa(&mut entities))
     });
 
     let mut entities = prepare_entities_soa();
-    c.bench_function("soa + simd norm", move |b| {
+    c.bench_function("soa + sse norm", move |b| {
         b.iter(|| normalize_velocity_soa_simd(&mut entities))
-    });*/
+    });
+
+    let mut entities = prepare_entities_soa();
+    c.bench_function("soa + avx norm", move |b| {
+        b.iter(|| normalize_velocity_soa_avx(&mut entities))
+    });
+    */
 }
 
 criterion_group!(benches, benchmark);
