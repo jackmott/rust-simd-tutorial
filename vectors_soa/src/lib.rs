@@ -51,10 +51,10 @@ impl Vector for Vectors3 {
             let mut len =
                 (self.x[i] * self.x[i] + self.y[i] * self.y[i] + self.z[i] * self.z[i]).sqrt();
             if len < min {
-                len *= min;
-                self.x[i] /= len;
-                self.y[i] /= len;
-                self.z[i] /= len;
+                len = (1.0/len)*min;
+                self.x[i] *= len;
+                self.y[i] *= len;
+                self.z[i] *= len;
             }
         }
     }
@@ -64,10 +64,11 @@ impl Vector for Vectors3 {
     }
 
     unsafe fn sse_clamp(&mut self, min: f32) {
-       
+               
     }
 
+    //#[target_feature(enable = "avx2")]
     unsafe fn avx_clamp(&mut self, min: f32) {
-       
+    
     }
 }

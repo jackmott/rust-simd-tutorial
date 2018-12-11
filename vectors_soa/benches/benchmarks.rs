@@ -111,8 +111,8 @@ fn benchmark(c: &mut Criterion) {
     let mut entities = prepare_entities_soa();
     c.bench_function("avx clamp", move |b| {
         b.iter(|| avx_clamp(&mut entities))
-    });
-  */  
+    });*/
+  
 }
 
 pub fn main() {
