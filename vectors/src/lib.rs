@@ -37,7 +37,18 @@ impl Vector for Vector3 {
         self.z /= len;
     }
 
-    unsafe fn sse_add(&mut self, v: &Vector3) {}
+    unsafe fn sse_add(&mut self, v: &Vector3) {
+        let a = _mm_set_ps(self.x,self.y,self.z,0.0);
+        let b = _mm_set_ps(v.x,v.y,v.z,0.0);
+        let result = _mm_add_ps(a,b);
+        let result_array = transmute::<__m128,[f32;4]>(result);
+        self.x = result_array[3];
+        self.y = result_array[2];
+        self.z = result_array[1];
+    
+    }
 
-    unsafe fn sse_norm(&mut self) {}
+    unsafe fn sse_norm(&mut self) {
+
+    }
 }

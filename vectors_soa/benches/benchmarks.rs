@@ -82,12 +82,12 @@ fn benchmark(c: &mut Criterion) {
         b.iter(|| move_entities(&mut entities))
     });
 
-/*
+
     let mut entities = prepare_entities_soa();
     c.bench_function("sse move", move |b| {
         b.iter(|| sse_move_entities(&mut entities))
     });
-  
+ 
     let mut entities = prepare_entities_soa();
     c.bench_function("scalar norm", move |b| {
         b.iter(|| norm(&mut entities))
@@ -95,7 +95,7 @@ fn benchmark(c: &mut Criterion) {
 
     let mut entities = prepare_entities_soa();
     c.bench_function("sse norm", move |b| {
-        b.iter(|| norm(&mut entities))
+        b.iter(||sse_norm(&mut entities))
     });
 
     let mut entities = prepare_entities_soa();
@@ -111,7 +111,7 @@ fn benchmark(c: &mut Criterion) {
     let mut entities = prepare_entities_soa();
     c.bench_function("avx clamp", move |b| {
         b.iter(|| avx_clamp(&mut entities))
-    });*/
+    });
   
 }
 
