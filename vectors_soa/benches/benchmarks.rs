@@ -95,7 +95,7 @@ fn benchmark(c: &mut Criterion) {
 
     let mut entities = prepare_entities_soa();
     c.bench_function("sse norm", move |b| {
-        b.iter(|| norm(&mut entities))
+        b.iter(|| sse_norm(&mut entities))
     });
 
     let mut entities = prepare_entities_soa();
